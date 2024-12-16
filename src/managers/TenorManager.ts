@@ -82,45 +82,35 @@ class TenorManager {
 		};
 	}
 
-	public async categories(): Promise<TenorCategory[]> {
-		return this.callApi('categories', {
-			type: 'featured',
-		}).then((data: any) => {
-			const tags = data.tags;
-			return tags.map((tag: any) => ({
-				name: tag['searchterm'],
-				image: tag.image,
-			}));
-		});
+	public async search(term: string, limit = 50, pos?: string): Promise<TenorResult> {
+	    return this.callApi('search', {
+	        q: term,
+	        ar_range: 'all',
+	        limit,
+	        pos, // Include the position parameter
+	    }).then((data: any) => {
+	        const results = data.results;
+	        const images = results.map(this.praseResult);
+	        return {
+	            next: data.next, // Return the next position for pagination
+	            images: images,
+	        };
+	    });
 	}
-
-	public async search(term: string, limit = 200): Promise<TenorResult> {
-		return this.callApi('search', {
-			q: term,
-			ar_range: 'all',
-			limit,
-		}).then((data: any) => {
-			const results = data.results;
-			const images = results.map(this.praseResult);
-			return {
-				next: data.next,
-				images: images,
-			};
-		});
-	}
-
-	public async trending(limit = 200): Promise<TenorResult> {
-		return this.callApi('featured', {
-			ar_range: 'all',
-			limit,
-		}).then((data: any) => {
-			const results = data.results;
-			const images = results.map(this.praseResult);
-			return {
-				next: data.next,
-				images: images,
-			};
-		});
+	
+	public async trending(limit = 50, pos?: string): Promise<TenorResult> {
+	    return this.callApi('featured', {
+	        ar_range: 'all',
+	        limit,
+	        pos, // Include the position parameter
+	    }).then((data: any) => {
+	        const results = data.results;
+	        const images = results.map(this.praseResult);
+	        return {
+	            next: data.next, // Return the next position for pagination
+	            images: images,
+	        };
+	    });
 	}
 
 	public async registerShare(image: TenorImage, searchTerm?: string): Promise<void> {
