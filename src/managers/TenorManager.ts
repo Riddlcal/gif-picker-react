@@ -94,7 +94,7 @@ class TenorManager {
 		});
 	}
 
-	public async search(term: string, limit = 50): Promise<TenorResult> {
+	public async search(term: string, limit = 200): Promise<TenorResult> {
 		return this.callApi('search', {
 			q: term,
 			ar_range: 'all',
@@ -109,7 +109,7 @@ class TenorManager {
 		});
 	}
 
-	public async trending(limit = 50): Promise<TenorResult> {
+	public async trending(limit = 200): Promise<TenorResult> {
 		return this.callApi('featured', {
 			ar_range: 'all',
 			limit,
