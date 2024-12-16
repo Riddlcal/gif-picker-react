@@ -102,7 +102,7 @@ class TenorManager {
 	        const response = await this.callApi('search', {
 	            q: term,
 	            ar_range: 'all',
-	            limit: 50, // Maximum limit per request
+	            limit: 200, // Maximum limit per request
 	            pos: next, // Use the `next` token for pagination
 	        });
 	
@@ -130,7 +130,7 @@ class TenorManager {
 	    do {
 	        const response = await this.callApi('featured', {
 	            ar_range: 'all',
-	            limit: 50, // Maximum limit per request
+	            limit: 200, // Maximum limit per request
 	            pos: next, // Use the `next` token for pagination
 	        });
 	
