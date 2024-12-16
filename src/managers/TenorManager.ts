@@ -94,33 +94,61 @@ class TenorManager {
 		});
 	}
 
-	public async search(term: string, limit = 200): Promise<TenorResult> {
-		return this.callApi('search', {
-			q: term,
-			ar_range: 'all',
-			limit,
-		}).then((data: any) => {
-			const results = data.results;
-			const images = results.map(this.praseResult);
-			return {
-				next: data.next,
-				images: images,
-			};
-		});
+	public async search(term: string): Promise<TenorResult> {
+	    let allImages: TenorImage[] = [];
+	    let next: string | undefined = undefined;
+	
+	    do {
+	        const response = await this.callApi('search', {
+	            q: term,
+	            ar_range: 'all',
+	            limit: 50, // Maximum limit per request
+	            pos: next, // Use the `next` token for pagination
+	        });
+	
+	        if (response) {
+	            const data = response as any; // Ensure correct type casting
+	            const results = data.results;
+	            const images = results.map(this.praseResult);
+	            allImages = [...allImages, ...images];
+	            next = data.next; // Update the next token
+	        } else {
+	            next = undefined; // Stop if there's an issue with the API
+	        }
+	    } while (next); // Continue fetching until no `next` token
+	
+	    return {
+	        next: undefined,
+	        images: allImages,
+	    };
 	}
-
-	public async trending(limit = 200): Promise<TenorResult> {
-		return this.callApi('featured', {
-			ar_range: 'all',
-			limit,
-		}).then((data: any) => {
-			const results = data.results;
-			const images = results.map(this.praseResult);
-			return {
-				next: data.next,
-				images: images,
-			};
-		});
+	
+	public async trending(): Promise<TenorResult> {
+	    let allImages: TenorImage[] = [];
+	    let next: string | undefined = undefined;
+	
+	    do {
+	        const response = await this.callApi('featured', {
+	            ar_range: 'all',
+	            limit: 50, // Maximum limit per request
+	            pos: next, // Use the `next` token for pagination
+	        });
+	
+	        if (response) {
+	            const data = response as any; // Ensure correct type casting
+	            const results = data.results;
+	            const images = results.map(this.praseResult);
+	            allImages = [...allImages, ...images];
+	            next = data.next; // Update the next token
+	        } else {
+	            next = undefined; // Stop if there's an issue with the API
+	        }
+	    } while (next); // Continue fetching until no `next` token
+	
+	    return {
+	        next: undefined,
+	        images: allImages,
+	    };
 	}
 
 	public async registerShare(image: TenorImage, searchTerm?: string): Promise<void> {
