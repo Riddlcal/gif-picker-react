@@ -24,8 +24,8 @@ function Search(): JSX.Element {
 		<div className="gpr-search-container">
 			<input
 				autoFocus={settings.autoFocusSearch}
-				aria-label={'Search Tenor'}
-				placeholder={'Search Tenor'}
+				aria-label={'Search GIFs'}
+				placeholder={'Search GIFs'}
 				className="gpr-search"
 				data-testid="gpr-search-input"
 				type="text"
